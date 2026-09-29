@@ -57,7 +57,7 @@ jobs:
       id-token: write
     env:
       TF_VAR_database_password: ${{ secrets.TF_VAR_DATABASE_PASSWORD }}
-      TF_PLAN_DIR: ${{ runner.temp }}/banking-dev-plans
+      TF_PLAN_DIR: ${{ github.workspace }}/.terraform-plan
     steps:
       - uses: actions/checkout@v4
 
@@ -80,6 +80,6 @@ jobs:
         if: always()
         with:
           name: terraform-plan-dev-${{ github.run_id }}
-          path: ${{ env.TF_PLAN_DIR }}
+          path: ${{ github.workspace }}/.terraform-plan
           if-no-files-found: ignore
           retention-days: 14

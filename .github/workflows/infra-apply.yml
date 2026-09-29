@@ -39,7 +39,7 @@ jobs:
       id-token: write
     env:
       TF_VAR_database_password: ${{ secrets.TF_VAR_DATABASE_PASSWORD }}
-      TF_PLAN_DIR: ${{ runner.temp }}/banking-dev-plans
+      TF_PLAN_DIR: ${{ github.workspace }}/.terraform-plan
     steps:
       - uses: actions/checkout@v4
         with:
