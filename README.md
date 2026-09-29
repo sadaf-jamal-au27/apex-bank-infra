@@ -1,21 +1,16 @@
-# gke-banking-infra
+# apex-bank-infra
 
-Audit-oriented GCP landing zone for Apex Bank (native Terraform — no Fabric FAST).
-
-## Layout
+Apex Bank GCP landing zone (native Terraform).  
+GitHub: [sadaf-jamal-au27/apex-bank-infra](https://github.com/sadaf-jamal-au27/apex-bank-infra)  
+Branching: `docs/BRANCHING.md` · WIF: `.github/GITHUB_SETUP.md`
 
 ```text
-terraform/modules/     # kms, iam, network (PSC+DNS), vpc_sc, gke, cloudsql, …
-terraform/live/dev/    # 00-foundation → 06-data, shared.tfvars, per-stack GCS state
-docs/LANDING_ZONE.md
+terraform/modules/     # kms, iam, network, vpc_sc, gke, cloudsql, github_wif, …
+terraform/live/dev/    # 00-foundation → 06-data
 ```
 
-```text
+```bash
 cp terraform/live/dev/shared.tfvars.example terraform/live/dev/shared.tfvars
-export TF_VAR_database_password='...'
-node scripts/terraform-stacks.mjs init dev
+# first time: apply 00-foundation then 01-iam from this laptop (creates OIDC/WIF)
 node scripts/terraform-stacks.mjs plan dev
 ```
-
-CI: `.github/workflows/infra-plan.yml` · `infra-apply.yml`
-# apex-bank-infra
