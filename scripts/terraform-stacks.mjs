@@ -116,13 +116,57 @@ if (command === "init") {
   process.exit(0);
 }
 
+const STACK_DEPS = {
+  "00-foundation": [],
+  "01-iam": [{ prefix: "banking/dev/00-foundation", keys: ["state_bucket_name"] }],
+  "02-network": [{ prefix: "banking/dev/00-foundation", keys: ["apis_enabled"] }],
+  "03-vpcsc": [{ prefix: "banking/dev/01-iam", keys: ["ci_service_account_email"] }],
+  "04-security": [{ prefix: "banking/dev/00-foundation", keys: ["audit_logs_bucket_name"] }],
+  "05-platform": [
+    { prefix: "banking/dev/00-foundation", keys: ["gke_key_id"] },
+    { prefix: "banking/dev/02-network", keys: ["network_name"] },
+  ],
+  "06-data": [
+    { prefix: "banking/dev/00-foundation", keys: ["sql_key_id"] },
+    { prefix: "banking/dev/02-network", keys: ["network_id"] },
+    { prefix: "banking/dev/05-platform", keys: ["workload_service_account_email"] },
+  ],
+};
+
+function remoteOutputsReady(bucket, prefix, keys) {
+  const res = spawnSync(
+    "gcloud",
+    ["storage", "cat", `gs://${bucket}/${prefix}/default.tfstate`],
+    { encoding: "utf-8" }
+  );
+  if (res.status !== 0 || !res.stdout) return false;
+  try {
+    const outputs = JSON.parse(res.stdout).outputs ?? {};
+    return keys.every((k) => outputs[k]?.value != null && outputs[k].value !== "");
+  } catch {
+    return false;
+  }
+}
+
 if (command === "plan" || command === "apply") {
   ensureStateBucket(env);
   const planRoot = process.env.TF_PLAN_DIR ?? path.join(REPO, ".terraform-plan", env);
   mkdirSync(planRoot, { recursive: true });
   const vars = extraVarFiles(env);
+  const bucket = readStateBucket(env);
 
   for (const stack of STACKS) {
+    const deps = STACK_DEPS[stack] ?? [];
+    const missing = deps.filter((d) => !remoteOutputsReady(bucket, d.prefix, d.keys));
+    if (missing.length) {
+      const msg = `${stack}: waiting on applied state ${missing.map((d) => d.prefix).join(", ")}`;
+      if (command === "plan") {
+        console.warn(`\n=== skip plan ${msg} ===`);
+        continue;
+      }
+      console.error(`\n=== cannot apply ${msg} ===`);
+      process.exit(1);
+    }
     if (stack === "06-data" && !process.env.TF_VAR_database_password) {
       if (command === "plan") {
         process.env.TF_VAR_database_password = "ci-plan-placeholder";
