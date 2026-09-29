@@ -18,7 +18,8 @@ github_repos = [
 access_policy_id       = ""
 create_access_policy   = true
 enable_vpc_sc          = true
-enable_org_policies    = true
+# Requires Org Policy Administrator on the project/org. This project SA cannot create policies.
+enable_org_policies    = false
 
 k8s_namespace       = "banking-dev"
 k8s_service_account = "banking-app"
