@@ -27,6 +27,12 @@ variable "psc_subnet_cidr" {
   default = "10.12.0.0/24"
 }
 
+variable "psc_googleapis_ip" {
+  type        = string
+  default     = "100.127.20.10"
+  description = "Reserved internal IP for PSC to Restricted Google APIs. Purpose PRIVATE_SERVICE_CONNECT requires a concrete address."
+}
+
 variable "serverless_connector_cidr" {
   type    = string
   default = "10.8.0.0/28"
