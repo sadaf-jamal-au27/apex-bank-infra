@@ -84,7 +84,7 @@ resource "google_compute_global_address" "psc_googleapis" {
 
 resource "google_compute_global_forwarding_rule" "psc_googleapis" {
   name                  = "banking-${var.env}-psc-gapis"
-  target                = "vpc-sc-restricted"
+  target                = "vpc-sc"
   load_balancing_scheme = ""
   network               = google_compute_network.vpc.id
   ip_address            = google_compute_global_address.psc_googleapis.id
