@@ -1,13 +1,8 @@
 name: Infra Terraform Apply
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches: [develop]
-    paths:
-      - "terraform/**"
-      - "scripts/**"
-      - ".github/workflows/infra-apply.yml"
   workflow_dispatch:
     inputs:
       github_environment:
@@ -30,7 +25,7 @@ env:
 jobs:
   terraform-apply:
     name: Terraform apply
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     environment: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.github_environment || 'dev' }}
@@ -42,8 +37,6 @@ jobs:
       TF_PLAN_DIR: ${{ github.workspace }}/.terraform-plan
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref || github.event.pull_request.merge_commit_sha }}
 
       - uses: google-github-actions/auth@v2
         with:
