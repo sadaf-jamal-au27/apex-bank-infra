@@ -70,6 +70,11 @@ function ensureStateBucket(env) {
     { encoding: "utf-8" }
   );
   if (check.status === 0) return;
+  const err = `${check.stderr ?? ""}${check.stdout ?? ""}`;
+  if (/403|PERMISSION_DENIED|vpcServiceControls/i.test(err)) {
+    console.warn(`State bucket gs://${bucket} already expected; describe denied (not creating):\n${err.trim().slice(0, 400)}`);
+    return;
+  }
   const loc = process.env.TF_STATE_BUCKET_LOCATION ?? "asia-south1";
   console.log(`Creating state bucket gs://${bucket}`);
   run("gcloud", [
