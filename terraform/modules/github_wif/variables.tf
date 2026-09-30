@@ -42,7 +42,6 @@ variable "terraform_roles" {
     "roles/dns.admin",
     "roles/binaryauthorization.policyEditor",
     "roles/accesscontextmanager.policyAdmin",
-    "roles/orgpolicy.policyAdmin",
     "roles/vpcaccess.admin",
     "roles/serviceusage.serviceUsageAdmin",
     "roles/iam.securityReviewer",
