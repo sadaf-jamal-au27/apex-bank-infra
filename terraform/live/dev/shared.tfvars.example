@@ -12,6 +12,7 @@ github_org = "sadaf-jamal-au27"
 github_repos = [
   "apex-bank-app",
   "apex-bank-infra",
+  "apex-bank-devops",
 ]
 
 # No Access Policy exists on this org yet — first apply of 03-vpcsc can create one.
