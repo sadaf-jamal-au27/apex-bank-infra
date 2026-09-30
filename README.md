@@ -1,4 +1,4 @@
-# apex-bank-infra
+# apex-bank-infrastructure
 
 Apex Bank GCP landing zone (native Terraform).  
 GitHub: [sadaf-jamal-au27/apex-bank-infra](https://github.com/sadaf-jamal-au27/apex-bank-infra)  
