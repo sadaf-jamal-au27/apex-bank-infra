@@ -22,7 +22,7 @@ Do **not** push directly to `develop` or `main`.
 | Event | Workflow |
 |-------|----------|
 | PR → `develop` / `main` | `infra-plan.yml` — fmt/validate, then plan |
-| PR **merged into `develop`**, or **workflow_dispatch** | `infra-apply.yml` — plan + apply `00`→`06` |
+| Push / merge to **`develop`**, or **workflow_dispatch** | `infra-apply.yml` — plan + apply `00`→`06` |
 
 Environment **`dev`**: `GCP_WIF_PROVIDER`, `GCP_CI_SERVICE_ACCOUNT`, `TF_VAR_DATABASE_PASSWORD`.
 
