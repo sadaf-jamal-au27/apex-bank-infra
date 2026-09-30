@@ -3,11 +3,6 @@ name: Infra Terraform Plan
 on:
   pull_request:
     branches: [develop, main]
-    paths:
-      - "terraform/**"
-      - "scripts/**"
-      - ".github/workflows/infra-plan.yml"
-      - ".github/workflows/infra-apply.yml"
   workflow_dispatch:
     inputs:
       github_environment:
