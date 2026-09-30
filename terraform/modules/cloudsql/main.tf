@@ -52,7 +52,8 @@ resource "google_sql_database_instance" "banking" {
       query_insights_enabled  = true
       query_string_length     = 4096
       record_application_tags = true
-      record_client_address   = true
+      # PSC instances reject record_client_address.
+      record_client_address   = false
     }
 
     database_flags {
