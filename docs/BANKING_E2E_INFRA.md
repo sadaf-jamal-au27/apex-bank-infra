@@ -26,5 +26,5 @@ Run SQL migrations from `gke-banking-application/db/migrations/` against Cloud S
 - Cloud SQL: **PSC** (no public IP), CMEK, REGIONAL HA, backups in `dr_region`  
 - GKE: private nodes **and private endpoint**, Workload Identity, etcd CMEK  
 - VPC-SC perimeter + Restricted Google APIs via PSC  
-- Secrets: Secret Manager CMEK → synced to K8s by devops  
+- Secrets: Secret Manager CMEK → synced to K8s by **apex-bank-devops** (`scripts/sync-db-secret.sh`)  
 - Pub/Sub: async domain events (optional locally)
