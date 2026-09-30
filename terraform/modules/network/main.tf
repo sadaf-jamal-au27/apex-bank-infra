@@ -83,7 +83,8 @@ resource "google_compute_global_address" "psc_googleapis" {
 }
 
 resource "google_compute_global_forwarding_rule" "psc_googleapis" {
-  name                  = "banking-${var.env}-psc-gapis"
+  # PSC Google APIs: 1-20 chars, lowercase letters/numbers only, must start with a letter.
+  name                  = "bnk${var.env}pscgapis"
   target                = "vpc-sc"
   load_balancing_scheme = ""
   network               = google_compute_network.vpc.id
