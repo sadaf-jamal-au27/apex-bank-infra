@@ -121,8 +121,7 @@ function roleSet(parentKind, parentId, member) {
 function requireCoveringRole(roles, covering, why) {
   if (covering.some((r) => roles.has(r))) return;
   console.error(
-    `preflight: missing IAM for ${why}. Need one of: ${covering.join(", ")}. ` +
-      `Grant it with gcloud, then re-run plan (do not wait for apply).`
+    `preflight: ${why}. Need one of: ${covering.join(", ")} on this CI SA (01-iam / github_wif).`
   );
   process.exit(1);
 }
@@ -151,13 +150,23 @@ function preflight(env) {
     "project IAM policy updates (01-iam)"
   );
 
-  if (readTfBool(env, "create_access_policy") && org) {
-    const orgRoles = roleSet("org", org, member);
-    requireCoveringRole(
-      orgRoles,
-      ["roles/accesscontextmanager.policyAdmin"],
-      "Access Policy create (03-vpcsc) — this is an org role, not project"
-    );
+  if ((readTfBool(env, "create_access_policy") || readTfBool(env, "enable_vpc_sc")) && org) {
+    // Do not read organizations.getIamPolicy — CI has policyAdmin, not org IAM viewer.
+    const acm = gcloudOut([
+      "access-context-manager",
+      "policies",
+      "list",
+      `--organization=${org}`,
+      "--format=value(name)",
+    ]);
+    if (acm.status !== 0 && /403|PERMISSION_DENIED/i.test(`${acm.stderr ?? ""}${acm.stdout ?? ""}`)) {
+      console.error(
+        `preflight: Access Context Manager API denied for ${member}. ` +
+          `Org role roles/accesscontextmanager.policyAdmin is a one-time org-admin bootstrap; Terraform CI cannot bind org IAM.`
+      );
+      process.exit(1);
+    }
+    console.log("access context manager: reachable");
   }
 
   const bucket = readStateBucket(env);
