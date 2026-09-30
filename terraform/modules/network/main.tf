@@ -74,6 +74,11 @@ resource "google_service_networking_connection" "psa" {
 }
 
 # Private Service Connect producer endpoint for Restricted Google APIs (VPC-SC compatible).
+locals {
+  psc_googleapis_endpoint_name = "bnk${var.env}pscgapis"
+  psc_googleapis_bundle        = "vpc-sc"
+}
+
 resource "google_compute_global_address" "psc_googleapis" {
   name         = "banking-${var.env}-psc-googleapis"
   purpose      = "PRIVATE_SERVICE_CONNECT"
@@ -83,12 +88,22 @@ resource "google_compute_global_address" "psc_googleapis" {
 }
 
 resource "google_compute_global_forwarding_rule" "psc_googleapis" {
-  # PSC Google APIs: 1-20 chars, lowercase letters/numbers only, must start with a letter.
-  name                  = "bnk${var.env}pscgapis"
-  target                = "vpc-sc"
+  name                  = local.psc_googleapis_endpoint_name
+  target                = local.psc_googleapis_bundle
   load_balancing_scheme = ""
   network               = google_compute_network.vpc.id
   ip_address            = google_compute_global_address.psc_googleapis.id
+
+  lifecycle {
+    precondition {
+      condition     = can(regex("^[a-z][a-z0-9]{0,19}$", local.psc_googleapis_endpoint_name))
+      error_message = "PSC Google APIs forwarding rule name must be 1-20 lowercase letters/numbers starting with a letter (got '${local.psc_googleapis_endpoint_name}')."
+    }
+    precondition {
+      condition     = contains(["all-apis", "vpc-sc"], local.psc_googleapis_bundle)
+      error_message = "PSC Google APIs target must be all-apis or vpc-sc (got '${local.psc_googleapis_bundle}')."
+    }
+  }
 }
 
 resource "google_vpc_access_connector" "serverless" {
