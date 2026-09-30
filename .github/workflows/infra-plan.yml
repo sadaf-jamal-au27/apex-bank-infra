@@ -77,7 +77,7 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
           terraform_wrapper: false
 
-      - name: terraform plan (all stacks)
+      - name: GCP preflight then terraform plan
         if: env.WIF_PROVIDER != ''
         run: node scripts/terraform-stacks.mjs plan dev
 

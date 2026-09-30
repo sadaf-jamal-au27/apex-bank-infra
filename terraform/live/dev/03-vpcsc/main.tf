@@ -26,4 +26,9 @@ module "vpc_sc" {
   access_policy_id         = var.access_policy_id
   create_access_policy     = var.create_access_policy && local.ci_service_account_email != ""
   ci_service_account_email = local.ci_service_account_email
+  # Actions still authenticates as github-ci-dev; 01-iam SA is github-ci-banking-dev.
+  ingress_identities = [
+    "serviceAccount:github-ci-dev@${var.project_id}.iam.gserviceaccount.com",
+    "user:parwexanas28@gmail.com",
+  ]
 }

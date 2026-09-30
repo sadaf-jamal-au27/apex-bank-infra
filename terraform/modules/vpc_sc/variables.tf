@@ -33,6 +33,12 @@ variable "ci_service_account_email" {
   description = "Terraform CI SA allowed to ingress the perimeter."
 }
 
+variable "ingress_identities" {
+  type        = list(string)
+  default     = []
+  description = "Principals allowed to call restricted APIs from outside the perimeter (GitHub Actions, laptop). Format: serviceAccount:... or user:..."
+}
+
 variable "restricted_services" {
   type = list(string)
   default = [
