@@ -1,5 +1,11 @@
 # Audit logging (evidence store). Destination is the bucket only — GCS sinks do not support object prefixes.
 
+resource "google_project_service_identity" "logging" {
+  provider = google-beta
+  project  = var.project_id
+  service  = "logging.googleapis.com"
+}
+
 resource "google_logging_project_sink" "audit" {
   name        = "banking-${var.env}-audit-logs"
   project     = var.project_id
@@ -19,6 +25,8 @@ resource "google_storage_bucket_iam_member" "audit_sink_writer" {
   bucket = var.audit_logs_bucket_name
   role   = "roles/storage.objectCreator"
   member = google_logging_project_sink.audit.writer_identity
+
+  depends_on = [google_project_service_identity.logging]
 }
 
 resource "google_project_iam_audit_config" "banking" {
@@ -54,4 +62,6 @@ resource "google_storage_bucket_iam_member" "platform_sink_writer" {
   bucket = var.audit_logs_bucket_name
   role   = "roles/storage.objectCreator"
   member = google_logging_project_sink.platform.writer_identity
+
+  depends_on = [google_project_service_identity.logging]
 }

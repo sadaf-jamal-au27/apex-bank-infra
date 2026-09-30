@@ -29,6 +29,7 @@ module "vpc_sc" {
   # Actions still authenticates as github-ci-dev; 01-iam SA is github-ci-banking-dev.
   ingress_identities = [
     "serviceAccount:github-ci-dev@${var.project_id}.iam.gserviceaccount.com",
+    "serviceAccount:service-${data.google_project.current.number}@gcp-sa-logging.iam.gserviceaccount.com",
     "user:parwexanas28@gmail.com",
   ]
 }
