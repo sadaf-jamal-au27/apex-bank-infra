@@ -23,6 +23,7 @@ const STACKS = [
   "04-security",
   "05-platform",
   "06-data",
+  "07-edge",
 ];
 
 function liveDir(env) {
@@ -284,6 +285,7 @@ const STACK_DEPS = {
     { prefix: "banking/dev/02-network", keys: ["network_id"] },
     { prefix: "banking/dev/05-platform", keys: ["workload_service_account_email"] },
   ],
+  "07-edge": [],
 };
 
 function remoteOutputsReady(bucket, prefix, keys) {
