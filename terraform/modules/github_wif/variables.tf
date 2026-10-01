@@ -40,6 +40,7 @@ variable "terraform_roles" {
     "roles/storage.admin",
     "roles/cloudkms.admin",
     "roles/dns.admin",
+    "roles/certificatemanager.admin",
     "roles/binaryauthorization.policyEditor",
     "roles/vpcaccess.admin",
     "roles/serviceusage.serviceUsageAdmin",

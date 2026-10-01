@@ -8,7 +8,9 @@ Production-style edge: **Certificate Manager + cert map** in Terraform; **GKE Ga
 gcloud services enable certificatemanager.googleapis.com --project=ai-rag-agent-project
 ```
 
-## 2. Terraform (`terraform/live/dev/edge`)
+CI service account needs **`roles/certificatemanager.admin`** (in `01-iam` / `github_wif.terraform_roles`). After adding the role, re-apply stack **`01-iam`**, then **`07-edge`**.
+
+## 2. Terraform (`terraform/live/dev/07-edge`)
 
 Configure `backend.tf` GCS bucket (same as other stacks), then:
 
